@@ -96,7 +96,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, device, n
         
         print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss / len(train_loader):.4f}, Accuracy: {100 * correct / total:.2f}%")
         
-        if epoch % val_iter == 0:
+        if (epoch+1) % val_iter == 0:
             model.eval()
             val_loss, correct, total = 0, 0, 0
             with torch.no_grad():

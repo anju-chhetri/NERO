@@ -16,7 +16,9 @@ def get_args():
     in_dataset = 'gastrovision'
     n_classes =11
     model_arch ='deit'
-    weights = f'/scratch/achhetri/experimentalResults/g-ood/{model_arch}/{in_dataset}.pt'
+    # weights = f'/scratch/achhetri/experimentalResults/g-ood/{model_arch}/{in_dataset}.pt'
+    weights = f'/work/FAC/HEC/DESI/yshresth/aim/achhetri/checkpoints_2/{model_arch}/medical/{in_dataset}_224.pt'
+
   
     base_dir = f'/users/achhetri/myWork/NERO_raw/repo_test.txt'
 

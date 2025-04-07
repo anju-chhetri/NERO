@@ -4,10 +4,9 @@ from torch.utils.data import DataLoader
 import numpy as np
 
 import sys
-sys.path.append("/users/achhetri/myWork/OOD-Detection/utils")
+sys.path.append("/users/achhetri/myWork/NERO/ood/utils")
 
-from model_loader import get_model
-from args_loader import get_args
+
 from data_loader import get_loader
 import torch.nn.functional as F
 
@@ -38,7 +37,7 @@ class LRPModel(torch.nn.Module):
             bias = self.model.fc.bias.unsqueeze(dim=0)
 
         elif self.args.model_arch=="deit":
-            activations = self.model.forward_features(images.to(self.device))
+            activations = self.model.forward_features(images.to(self.device))[:,0]
             weight_fc = self.model.head.weight.to(self.device)
             bias = self.model.head.bias.unsqueeze(dim=0)
         
@@ -56,14 +55,7 @@ class LRPModel(torch.nn.Module):
 
    
 
-def get_relevancy_score(args, model):
-
-    preprocess = transforms.Compose([
-        transforms.Resize((224, 224)),  # Resizing the image to 224x224 as required by VGG16
-        transforms.ToTensor(),          # Convert image to PyTorch tensor
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
-        )
-    
+def get_relevancy_score(args, model):    
     lrp_model = LRPModel(model, args)
 
     train_loader, id_loader, ood_loader = get_loader(args)
