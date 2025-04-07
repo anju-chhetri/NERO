@@ -8,7 +8,7 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from torchvision.models import resnet18, ResNet18_Weights
 
-sys.path.append("/users/achhetri/myWork/good_medical") # remove this
+sys.path.append("/users/achhetri/myWork/NERO/model_training") # remove this
 
 def initialize_seed(seed: int):
     torch.manual_seed(seed)
@@ -116,9 +116,10 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, device, n
                     best_accuracy = accuracy
                     torch.save(model.state_dict(), os.path.join(checkpoint_path, f"{args.dataset}.pt"))
         scheduler.step(epoch-1) 
+
 if __name__ == "__main__":
     args = parse_args()
-    
+    initialize_seed(args.seed)
     checkpoint_path = os.path.join(args.checkpoint_dir, args.model_name)
     os.makedirs(checkpoint_path, exist_ok=True)
     
