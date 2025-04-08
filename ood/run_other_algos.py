@@ -61,7 +61,7 @@ for uncertainty in UNC_METHODS:
                                         train_loader = train_loader,
                                         val_loader = id_loader,
                                         ood_loader = ood_loader,
-                                        model_name = args.name,
+                                        model_name = args.model_arch,
                                         )
     elif uncertainty.name == 'fdbd':
         scores_in, scores_ood = uncertainty.quantify(
@@ -69,7 +69,7 @@ for uncertainty in UNC_METHODS:
                                         train_loader = train_loader,
                                         val_loader = id_loader,
                                         ood_loader = ood_loader,
-                                        model_name = args.name,
+                                        model_name = args.model_arch,
                                         id_dataset = args.in_dataset
                                         )
     
@@ -79,13 +79,13 @@ for uncertainty in UNC_METHODS:
         scores_in = uncertainty.quantify(
             data_loader=id_loader,
             model=model,
-            model_name = args.name,
+            model_name = args.model_arch,
             num_class = args.num_classes
         )
         scores_ood = uncertainty.quantify(
             data_loader=ood_loader,
             model=model,
-            model_name = args.name,
+            model_name = args.model_arch,
             num_class = args.num_classes
         )
     
