@@ -614,7 +614,7 @@ class ViM:
         logit_id_val = np.array(val_logits)
         logit_ood = np.array(ood_logits)
 
-        if model_name=="vit" or model_name=="mlpmixer":
+        if model_name=="deit" or model_name=="mlpmixer":
             linear_layer = model.head.state_dict()
         elif model_name=="swinv2":
             linear_layer =model.head.fc.state_dict()
@@ -695,7 +695,7 @@ class ReAct_Energy:
 
                 
     
-        if kwargs["model_name"]=="vit"  or  kwargs["model_name"]=="mlpmixer":
+        if kwargs["model_name"]=="deit"  or  kwargs["model_name"]=="mlpmixer":
             linear_layer = model.head.state_dict()
         elif kwargs["model_name"]=="swinv2":
             linear_layer = model.head.fc.state_dict()
@@ -717,7 +717,7 @@ class GradNorm:
     name = "gradnorm"
     def quantify(self, model, data_loader,**kwargs):
             
-        if kwargs["model_name"]=="vit"  or  kwargs["model_name"]=="mlpmixer":
+        if kwargs["model_name"]=="deit"  or  kwargs["model_name"]=="mlpmixer":
             linear_layer = model.head.state_dict()
         
         elif kwargs["model_name"]=="swinv2":
