@@ -1,14 +1,9 @@
 import torch
+import numpy as np
+import torch.nn.functional as F
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-import numpy as np
-
-import sys
-sys.path.append("/users/achhetri/myWork/NERO/ood/utils")
-
-
-from data_loader import get_loader
-import torch.nn.functional as F
+from utils.data_loader import get_loader
 
 class LRPModel(torch.nn.Module):
     def __init__(self, model, args):

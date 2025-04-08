@@ -12,8 +12,7 @@ def get_model(args):
     if args.model_arch=="resnet18":
         # model = resnet18()
         # model.fc = nn.Linear(512, args.num_classes)
-        # model.load_state_dict(torch.load(weights_path, map_location=torch.device('cpu'), weights_only=True))
-        # torch.serialization.safe_globals([ResNet])
+        # model.load_state_dict(torch.load(weights_path, map_location=torch.device('cpu'), weights_only=False))
         model = torch.load(weights_path, map_location=torch.device('cpu'), weights_only=False)
 
     elif args.model_arch=="deit":            

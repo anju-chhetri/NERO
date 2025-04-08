@@ -1,14 +1,8 @@
-#! /usr/bin/env python3
-
-import sys
-sys.path.append("/users/achhetri/myWork/NERO/ood")
-sys.path.append("/users/achhetri/myWork/NERO/ood/utils")
-
 import torch
 import os
-from data_loader import get_loader
-from args_loader import get_args
-from model_loader import get_model
+from utils.data_loader import get_loader
+from utils.args_loader import get_args
+from utils.model_loader import get_model
 import numpy as np
 import torch.nn.functional as F
 import time
@@ -106,4 +100,4 @@ for uncertainty in UNC_METHODS:
     fpr = np.sum(scores_ood <= thresh)/len(scores_ood)
     
     with open(args.base_dir, 'a') as file:
-        file.write(f" AUC = {round(aucs.mean()*100, 2):.2f} FPR@95TPR = {round(fpr.mean()*100, 2):.2f}\n")    
+        file.write(f"{uncertainty.name}: AUC = {round(aucs.mean()*100, 2):.2f} FPR@95TPR = {round(fpr.mean()*100, 2):.2f}\n")    

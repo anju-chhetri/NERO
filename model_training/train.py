@@ -8,7 +8,6 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from torchvision.models import resnet18, ResNet18_Weights
 
-sys.path.append("/users/achhetri/myWork/NERO/model_training") # remove this
 
 def initialize_seed(seed: int):
     torch.manual_seed(seed)
@@ -22,40 +21,43 @@ def parse_args():
     parser.add_argument('--dataset', type=str, default='gastrovision', help='Dataset name')
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size for training and validation')
     parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs')
-    parser.add_argument('--val_iter', type=int, default=10, help='Validation interval')
+    parser.add_argument('--val_iter', type=int, default=5, help='Validation interval')
     parser.add_argument('--num_classes', type=int, default=11, help='Number of output classes')
     parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate')
     parser.add_argument('--model_name', type=str, default='resnet18', choices=['resnet18', 'deit'], help='Model architecture')
-    parser.add_argument('--torch_path', type=str, default=os.getenv('NERO_TORCH_PATH', '/scratch/achhetri/aischool'), help='Path for Torch models')
-    parser.add_argument('--checkpoint_dir', type=str, default=os.getenv('NERO_CHECKPOINT_DIR', '/scratch/achhetri/experimentalResults/g-ood/'), help='Checkpoint directory')
-    parser.add_argument('--train_dir', type=str, default=os.getenv('NERO_TRAIN_DIR', 'data/train'), help='Training data directory')
-    parser.add_argument('--test_dir', type=str, default=os.getenv('NERO_TEST_DIR', 'data/test'), help='Testing data directory')
+    parser.add_argument('--torch_path', type=str,  help='Path for Torch models')
+    parser.add_argument('--checkpoint_dir', type=str, help='Checkpoint directory')
+    parser.add_argument('--train_dir', type=str, help='Training data directory')
+    parser.add_argument('--test_dir', type=str, help='Testing data directory')
     parser.add_argument('--seed', type=int, default=42, help='Seed value')
 
     return parser.parse_args()
 
 
-# train_dir = f"/work/FAC/HEC/DESI/yshresth/aim/achhetri/medical/{dataset}/ID/train"
-# test_dir = f"/work/FAC/HEC/DESI/yshresth/aim/achhetri/medical/{dataset}/ID/test"
-# checkpoint_dir = "/scratch/achhetri/experimentalResults/g-ood/resnet18/medical"
-# torch_path = "/scratch/achhetri/aischool"
-# num_classes=11
-# batch_size = 32
-# val_iter = 10
-# epoch = 100
-
 def get_data_loaders(train_dir, test_dir, batch_size):
+    k_transform_train = transforms.Compose(
+                    [
+                        transforms.Resize(size=(224, 224)),
+                        transforms.RandomHorizontalFlip(0.5),
+                        transforms.ColorJitter(brightness=0.25,contrast=0.25,saturation=0.25),
+                        transforms.RandomVerticalFlip(0.5),
+                        transforms.RandomInvert(0.3),
+                        transforms.RandomEqualize(0.3),
+                        transforms.ToTensor(),
+                        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]), #kvasir norm
+                    ]
+                ) 
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     ])
     
-    train_dataset = datasets.ImageFolder(root=train_dir, transform=transform)
+    train_dataset = datasets.ImageFolder(root=train_dir, transform=k_transform_train)
     val_dataset = datasets.ImageFolder(root=test_dir, transform=transform)
     
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=1)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=1)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=1, pin_memory=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=1, pin_memory=True)
     
     return train_loader, val_loader
 
@@ -71,10 +73,9 @@ def get_model(model_name, num_classes, torch_path):
     
     return model
 
-def train_model(model, train_loader, val_loader, criterion, optimizer, device, num_epochs, val_iter, checkpoint_path, scheduler):
+def train_model(model, train_loader, val_loader, criterion, optimizer, device, num_epochs, val_iter, checkpoint_path):
     model.to(device)
     best_accuracy = 0
-    
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
@@ -88,7 +89,6 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, device, n
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
-            
             _, predicted = torch.max(outputs, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
@@ -114,8 +114,8 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, device, n
                 
                 if accuracy > best_accuracy:
                     best_accuracy = accuracy
-                    torch.save(model.state_dict(), os.path.join(checkpoint_path, f"{args.dataset}.pt"))
-        scheduler.step(epoch-1) 
+                    torch.save(model, os.path.join(checkpoint_path, f"{args.dataset}.pt"))
+        # scheduler.step(epoch-1) 
 
 if __name__ == "__main__":
     args = parse_args()
@@ -129,6 +129,6 @@ if __name__ == "__main__":
     
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, args.epochs,eta_min=1e-7)
+    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, args.epochs,eta_min=1e-7)
     
-    train_model(model, train_loader, val_loader, criterion, optimizer, device, args.epochs, args.val_iter, checkpoint_path, scheduler)
+    train_model(model, train_loader, val_loader, criterion, optimizer, device, args.epochs, args.val_iter, checkpoint_path)
