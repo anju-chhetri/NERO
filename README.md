@@ -20,7 +20,32 @@ This project uses two publicly available medical imaging datasets for evaluating
 
 Pre-trained weights of the classification networks are included in the repository: ResNet-18 and DeiT models trained on KvasirV2 and GastroVision datasets can be found [here for Kvasir - ResNet-18](link), [GastroVision - ResNet-18](link), [Kvasir - DeiT](link), and [GastroVision - DeiT](link).
 
+## 🚀 Running OOD Detection
 
+To run OOD detection on the **KvasirV2** dataset:
+
+```bash
+bash ood/demo_kvasir.sh
+```
+To run it on the **GastroVision** dataset:
+```bash
+bash ood/demo_gastrovision.sh
+```
+
+``` bash
+python3 ood/eval_ood.py \
+    --in-dataset 'kvasir' \
+    --num_classes 3 \
+    --model-arch 'resnet18' \
+    --weights 'path/to/model/checkpoints' \
+    --seed 42 \
+    --base-dir 'path/to/save/results' \
+    --id_path_train 'path/to/in-distribution/training/data' \
+    --id_path_valid 'path/to/in-distribution/validation/data' \
+    --ood_path 'path/to/ood/data'
+
+```
+Modify the paths and options as needed for your dataset, model architecture, or checkpoint location.
 ## Results
 # ResNet-18:
 
