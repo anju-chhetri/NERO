@@ -1,7 +1,7 @@
 # NERO
 This codebase provides a Pytorch implementation of:
 
-[![NERO](https://img.shields.io/badge/)](https://arxiv.org/pdf/2506.15404)
+[NERO](https://arxiv.org/pdf/2506.15404)
 
 *Chhetri A.*, Korhonen J, Gyawali P,  Bhattarai B.
 ## Abstract
