@@ -78,3 +78,16 @@ Modify the paths and options as needed for your dataset, model architecture, or 
 | Energy+ReAct  | 83.49      | 46.84| 73.42        | 83.22|
 | GradNorm      | 71.33      | 57.8 | 54.85        | 88.68|
 | NERO (ours)   | 92.73      | **18.96**| **82.03**| **76.74**|
+
+### Consider citing this work if you find it useful.
+
+```
+@inproceedings{chhetri2025nero,
+  title={Nero: Explainable out-of-distribution detection with neuron-level relevance in gastrointestinal imaging},
+  author={Chhetri, Anju and Korhonen, Jari and Gyawali, Prashnna and Bhattarai, Binod},
+  booktitle={International Conference on Medical Image Computing and Computer-Assisted Intervention},
+  pages={349--359},
+  year={2025},
+  organization={Springer}
+}
+```
