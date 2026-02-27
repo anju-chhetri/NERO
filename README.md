@@ -1,8 +1,7 @@
 # NERO
 This codebase provides a Pytorch implementation of:
 
-[NERO](https://arxiv.org/pdf/2506.15404)
-
+[![NERO](https://img.shields.io/badge/MICCAI'25-NERO-A3DC9A?style=for-the-badge)](https://arxiv.org/pdf/2506.15404)
 *Chhetri A.*, Korhonen J, Gyawali P,  Bhattarai B.
 ## Abstract
 Ensuring reliability is paramount in deep learning, particularly within the domain of medical imaging, where diagnostic decisions often hinge on model outputs. The capacity to separate out-of-distribution (OOD) samples has proven to be a valuable indicator of a model’s reliability in research. In medical imaging, this is especially critical, as identifying OOD inputs can help flag potential anomalies that might otherwise go undetected. While many OOD detection methods rely on feature or logit space representations, recent works suggest these approaches may not fully capture OOD diversity. To address this, we propose a novel OOD scoring mechanism, called NERO, that leverages neuron-level relevance at the feature layer. Specifically, we cluster neuron-level relevance for each in-distribution (ID) class to form representative centroids and introduce a relevance distance metric to quantify a new sample’s deviation from these centroids, enhancing OOD separability. Additionally, we refine performance by incorporating scaled relevance in the bias term and combining feature norms. Our framework also enables explainable OOD detection. We validate its effectiveness across multiple deep learning architectures on the gastrointestinal imaging benchmarks Kvasir and GastroVision, achieving improvements over state-of-the-art OOD detection methods.
